@@ -63,10 +63,11 @@
 
     if(p.mode==='speed')return {tone:'neutral',head:`Heute: ${w?w+' kg beibehalten':'leicht bleiben'}`,detail:'Power vor Last: alle Wiederholungen schnell und technisch identisch. Nur steigern, wenn die Geschwindigkeit über alle Sätze stabil bleibt.'};
 
-    // RIR has priority over rep progression. A hard set never earns more reps/load next time.
-    if(hardRir(last,p))return {tone:'warn',head:holdHead(p,w),detail:`RIR vor Wiederholungen: Letztes Mal fiel mindestens ein Satz unter ${rirLabel(p)}. Heute keine zusätzlichen Reps erzwingen. Jeden Satz bei ${rirLabel(p)} stoppen – auch wenn dadurch weniger Wiederholungen entstehen. Erst danach wieder progressieren.`};
-
     if(repeatedLow)return {tone:'warn',head:p.mode==='assist'?'Heute: Unterstützung leicht erhöhen':'Heute: Last leicht reduzieren',detail:`Die Untergrenze wurde in zwei Einheiten hintereinander verfehlt. Nimm den kleinsten verfügbaren Schritt und arbeite wieder sauber im Bereich ${p.min}–${p.max} ${p.unit} bei ${rirLabel(p)}.`};
+
+    // RIR has priority over rep progression. A single hard session does not trigger a load reduction,
+    // but it never earns more reps/load next time either.
+    if(hardRir(last,p))return {tone:'warn',head:holdHead(p,w),detail:`RIR vor Wiederholungen: Letztes Mal fiel mindestens ein Satz unter ${rirLabel(p)}. Heute keine zusätzlichen Reps erzwingen. Jeden Satz bei ${rirLabel(p)} stoppen – auch wenn dadurch weniger Wiederholungen entstehen. Erst danach wieder progressieren.`};
 
     if(below(last,p))return {tone:'neutral',head:holdHead(p,w),detail:`Gewicht zunächst halten. Ziel ist wieder mindestens ${p.min} ${p.unit} pro Satz bei ${rirLabel(p)}. Wird die Untergrenze auch diesmal verfehlt, reduzieren wir beim nächsten Mal leicht.`};
 
