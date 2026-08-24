@@ -17,7 +17,7 @@
 
 <section id="homeScreen" class="screen active">
   <div class="topbar">
-    <div class="brand"><div class="logo">T</div><div><h1>Training Tracker</h1><div class="small muted">V2.1 • Mobile PWA</div></div></div>
+    <div class="brand"><div class="logo">T</div><div><h1>Training Tracker</h1><div class="small muted">V2.2 • Mobile PWA</div></div></div>
     <button class="iconbtn" onclick="openData()">Daten</button>
   </div>
 
@@ -94,7 +94,7 @@
 <dialog id="dataDialog">
   <div class="modalhead"><strong>Daten & Backup</strong><button class="btn" onclick="dataDialog.close()">Schließen</button></div>
   <div class="modalbody">
-    <div class="notice">Die Daten liegen lokal auf deinem Handy. Regelmäßig JSON-Backup exportieren.</div>
+    <div class="notice">Trainingsdaten werden lokal redundant gespeichert und automatisch wiederhergestellt. Für zusätzliche Sicherheit kannst du jederzeit ein JSON-Backup exportieren.</div>
     <div style="height:12px"></div>
     <button class="btn primary" onclick="exportJSON()">JSON-Backup exportieren</button>
     <button class="btn" style="margin-top:8px" onclick="importFile.click()">Backup importieren</button>
@@ -108,5 +108,6 @@
 <script src="plan.js"></script>
 <script src="app.js"></script>
 <script src="recommendation.js"></script>
+<script src="storage.js"></script>
 </body>
 </html>
