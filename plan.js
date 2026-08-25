@@ -12,7 +12,7 @@ const PLAN={
  lower:{title:"Einheit 3 – Lower + Core",subtitle:"Beine, Hüfte & Rumpf",type:"strength",warmup:"Wall Angels ×10 + Inchworm Walkouts ×2 + World's Greatest Stretch ×10 + Leg Swings vor/zurück ×10 je Bein + Leg Swings seitlich ×10 je Bein + Bodyweight Split Squat ×6/Seite + Glute Bridge ×10 + Squat ×8.",exercises:[
   {id:"bulgarian",name:"Bulgarian Split Squat",sets:3,min:8,max:10,unit:"Wdh./Seite",mode:"load",rest:120,note:"2 RIR • schwächere Seite zuerst"},
   {id:"squat",name:"Smith Squat / Heel-Elevated Goblet Squat",sets:3,min:8,max:12,unit:"Wdh.",mode:"load",rest:120,note:"2 RIR"},
-  {id:"hip_thrust",name:"Smith Hip Thrust",sets:3,min:8,max:12,unit:"Wdh.",mode:"load",rest:90,note:"1–2 RIR"},
+  {id:"hip_thrust",name:"Barbell Hip Thrust",sets:3,min:8,max:12,unit:"Wdh.",mode:"load",rest:90,note:"1–2 RIR"},
   {id:"leg_curl",name:"Single-Leg Cable Leg Curl",sets:2,min:10,max:15,unit:"Wdh./Seite",mode:"load",rest:75,note:"1–2 RIR"},
   {id:"calf_raise",name:"Calf Raise",sets:3,min:10,max:15,unit:"Wdh.",mode:"load",rest:60,note:"1 RIR"},
   {id:"pallof",name:"Pallof Press",sets:2,min:10,max:12,unit:"Wdh./Seite",mode:"load",rest:60,note:"2–3 RIR"}
