@@ -1,4 +1,4 @@
-const CACHE="training-tracker-v2.7.1";
+const CACHE="training-tracker-v2.7.2";
 const ASSETS=["./","./index.html","./app.css","./plan.js","./app.js","./recommendation.js","./storage.js","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))));self.clients.claim()});
