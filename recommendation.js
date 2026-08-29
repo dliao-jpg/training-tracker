@@ -1,4 +1,4 @@
-// Training Tracker V2.3 – RIR-first recommendation layer
+// Training Tracker V2.3.2 – RIR-first recommendation layer + timed carry reserve
 (function(){
   const css=`
   .todayReco{margin-top:10px;border-radius:12px;padding:11px 12px;background:#18202b;border:1px solid #314158}
@@ -16,7 +16,10 @@
     return data.sessions
       .filter(s=>s.key===k&&s.type==='strength')
       .sort((a,b)=>(b.date+(b.savedAt||'')).localeCompare(a.date+(a.savedAt||'')))
-      .map(s=>s.exercises?.find(x=>x.id===id))
+      .map(s=>{
+        const ex=s.exercises?.find(x=>x.id===id);
+        return ex?{...ex,_sessionDate:s.date,_savedAt:s.savedAt}:null;
+      })
       .filter(Boolean);
   }
   function sets(ex){return (ex?.sets||[]).filter(s=>(+s.reps||0)>0)}
@@ -44,12 +47,33 @@
     if(idx>=0)a[idx].reps++;
     return a.map(s=>s.reps).join(' / ');
   }
+
+  // Until 28 Aug 2026 Farmer Carry reserve was entered as RIR with the convention
+  // 1 RIR = 5 seconds. From 29 Aug onward the same field stores seconds directly.
+  function carryReserve(s,ex){
+    if(s?.reserveSeconds!=null)return +s.reserveSeconds;
+    if(s?.rir==null)return null;
+    const v=+s.rir;
+    return ex?._sessionDate&&ex._sessionDate<'2026-08-29'?v*5:v;
+  }
+  function carryTarget(ex,p){
+    const a=sets(ex).slice(0,p.sets).map(s=>Math.min(p.max,+s.reps||0));
+    while(a.length<p.sets)a.push(p.min);
+    const idx=a.findIndex(v=>v<p.max);
+    if(idx>=0)a[idx]=Math.min(p.max,a[idx]+5);
+    return a.join(' / ');
+  }
+
   function summary(ex,p){
     const a=sets(ex).slice(0,p.sets); if(!a.length)return '';
     const reps=a.map(s=>s.reps).join(' / ');
-    const rirs=a.map(s=>s.rir==null?'–':s.rir).join(' / ');
     const w=load(ex)||0;
     const prefix=p.mode==='assist'?`${w} kg Unterstützung`:`${w} kg`;
+    if(p.mode==='time'){
+      const reserves=a.map(s=>{const v=carryReserve(s,ex);return v==null?'–':v}).join(' / ');
+      return `${prefix} • ${reps} Sek. • Reserve ${reserves} Sek.`;
+    }
+    const rirs=a.map(s=>s.rir==null?'–':s.rir).join(' / ');
     return `${prefix} • ${reps} ${p.unit} • RIR ${rirs}`;
   }
   function holdHead(p,w){
@@ -58,22 +82,35 @@
   }
   function recommendation(k,p){
     const h=history(k,p.id), last=h[0];
-    if(!last)return {tone:'neutral',head:'Heute: Einstiegsgewicht wählen',detail:`Wähle eine Last, mit der du ungefähr die Mitte von ${p.min}–${p.max} ${p.unit} sauber mit ${rirLabel(p)} schaffst. Technik und volle ROM bleiben konstant.`};
-    const w=load(last), repeatedLow=h.length>=2&&h.slice(0,2).every(x=>below(x,p));
+    if(!last){
+      if(p.mode==='time')return {tone:'neutral',head:'Heute: Einstiegsgewicht wählen',detail:`Wähle ein Gewicht für etwa ${p.min}–35 Sekunden pro Satz bei stabiler Haltung und ungefähr 10–15 Sekunden Reserve.`};
+      return {tone:'neutral',head:'Heute: Einstiegsgewicht wählen',detail:`Wähle eine Last, mit der du ungefähr die Mitte von ${p.min}–${p.max} ${p.unit} sauber mit ${rirLabel(p)} schaffst. Technik und volle ROM bleiben konstant.`};
+    }
+    const w=load(last);
 
     if(p.mode==='speed')return {tone:'neutral',head:`Heute: ${w?w+' kg beibehalten':'leicht bleiben'}`,detail:'Power vor Last: alle Wiederholungen schnell und technisch identisch. Nur steigern, wenn die Geschwindigkeit über alle Sätze stabil bleibt.'};
 
+    if(p.mode==='time'){
+      const a=sets(last).slice(0,p.sets);
+      const reserves=a.map(s=>carryReserve(s,last));
+      const lowTime=a.some(s=>+s.reps<p.min);
+      const lowReserve=reserves.some(v=>v!=null&&v<5);
+      const top=a.length>=p.sets&&a.every(s=>+s.reps>=p.max)&&reserves.every(v=>v==null||v>=5);
+      if(top)return {tone:'good',head:'Heute: Gewicht leicht erhöhen',detail:`Alle Carries erreichten ${p.max} Sekunden mit mindestens etwa 5 Sekunden Reserve. Nimm den kleinsten sinnvollen Gewichtsschritt und starte wieder bei ungefähr ${p.min}–35 Sekunden.`};
+      if(lowReserve)return {tone:'warn',head:holdHead(p,w),detail:'Die Zeitreserve war in mindestens einem Satz unter 5 Sekunden. Heute keine zusätzliche Zeit erzwingen; jeden Carry mit sauberer Haltung und mindestens etwa 5 Sekunden Reserve beenden.'};
+      if(lowTime)return {tone:'neutral',head:holdHead(p,w),detail:`Gewicht zunächst halten und wieder mindestens ${p.min} Sekunden pro Satz mit sauberer Haltung erreichen.`};
+      return {tone:'neutral',head:holdHead(p,w),detail:`Ziel: ${carryTarget(last,p)} Sek. Maximal +5 Sekunden Gesamtzeit – nur wenn die Haltung stabil bleibt und noch mindestens etwa 5 Sekunden Reserve vorhanden sind.`};
+    }
+
+    const repeatedLow=h.length>=2&&h.slice(0,2).every(x=>below(x,p));
     if(repeatedLow)return {tone:'warn',head:p.mode==='assist'?'Heute: Unterstützung leicht erhöhen':'Heute: Last leicht reduzieren',detail:`Die Untergrenze wurde in zwei Einheiten hintereinander verfehlt. Nimm den kleinsten verfügbaren Schritt und arbeite wieder sauber im Bereich ${p.min}–${p.max} ${p.unit} bei ${rirLabel(p)}.`};
 
-    // RIR has priority over rep progression. A single hard session does not trigger a load reduction,
-    // but it never earns more reps/load next time either.
     if(hardRir(last,p))return {tone:'warn',head:holdHead(p,w),detail:`RIR vor Wiederholungen: Letztes Mal fiel mindestens ein Satz unter ${rirLabel(p)}. Heute keine zusätzlichen Reps erzwingen. Jeden Satz bei ${rirLabel(p)} stoppen – auch wenn dadurch weniger Wiederholungen entstehen. Erst danach wieder progressieren.`};
 
     if(below(last,p))return {tone:'neutral',head:holdHead(p,w),detail:`Gewicht zunächst halten. Ziel ist wieder mindestens ${p.min} ${p.unit} pro Satz bei ${rirLabel(p)}. Wird die Untergrenze auch diesmal verfehlt, reduzieren wir beim nächsten Mal leicht.`};
 
     if(topReady(last,p)){
       if(p.mode==='assist')return {tone:'good',head:'Heute: Unterstützung reduzieren',detail:`Alle Sätze erreichten die Obergrenze mit ausreichender Reserve. Nimm den kleinsten verfügbaren Schritt weniger Unterstützung und starte wieder im unteren bis mittleren Wiederholungsbereich bei ${rirLabel(p)}.`};
-      if(p.mode==='time')return {tone:'good',head:'Heute: Gewicht leicht erhöhen',detail:`Alle Carries erreichten das obere Zeitlimit kontrolliert. Nimm den kleinsten sinnvollen Gewichtsschritt und starte wieder im unteren Zeitbereich.`};
       if(w===0)return {tone:'good',head:'Heute: Schwierigkeit leicht erhöhen',detail:`Die Obergrenze war in allen Sätzen mit ausreichender Reserve erreicht. Nutze eine etwas schwierigere Variante oder kleine Zusatzlast und starte wieder unten im Bereich.`};
       return {tone:'good',head:'Heute: Gewicht leicht erhöhen',detail:`Die Obergrenze war in allen Sätzen bei mindestens ${rirRange(p).min} RIR erreicht. Nimm den kleinsten sinnvollen Gewichtsschritt und starte wieder im unteren bis mittleren Bereich.`};
     }
@@ -93,6 +130,23 @@
       const card=workoutBody.querySelector(`.exercise[data-id="${ex.id}"]`);
       if(!card)return;
       const last=history(k,ex.id)[0];
+
+      if(ex.mode==='time'){
+        const rows=[...card.querySelectorAll('.setrow')];
+        rows.forEach((row,i)=>{
+          const input=row.querySelector('.rir');
+          const label=input?.closest('div')?.querySelector('label');
+          if(label)label.textContent='Reserve Sek.';
+          if(input){input.min='0';input.max='60';input.step='1';}
+          const old=last?.sets?.[i];
+          if(input&&old){const v=carryReserve(old,last);input.value=v==null?'':v;}
+        });
+        const oldLast=card.querySelector('.last');
+        if(oldLast&&last){
+          oldLast.textContent='Letztes Mal: '+last.sets.map(s=>`${s.weight||0} kg × ${s.reps||0} Sek. • ${carryReserve(s,last)??'-'} Sek. Reserve`).join(' · ');
+        }
+      }
+
       card.querySelector('.exnote')?.insertAdjacentHTML('afterend',boxHTML(k,ex,last));
     });
   };
@@ -109,6 +163,12 @@
     const box=ex.querySelector('.reco');
     if(rows.some(r=>!r.reps)){box.className='reco';box.textContent='Werte eintragen → Empfehlung erscheint automatisch.';return}
     if(p.mode==='speed'){box.className='reco';box.textContent='Power: Geschwindigkeit und Technik haben Vorrang. Nicht bis zum Grind trainieren.';return}
+    if(p.mode==='time'){
+      if(rows.some(r=>r.rir==null)){box.className='reco';box.textContent='Bitte zusätzlich die geschätzten Sekunden Reserve eintragen.';return}
+      if(rows.some(r=>r.rir<5)){box.className='reco warn';box.textContent='Zeitreserve unter 5 Sek. – nächstes Mal keine zusätzliche Zeit erzwingen und den Carry etwas früher beenden.';return}
+      if(rows.every(r=>r.reps>=p.max&&r.rir>=5)){box.className='reco good';box.textContent='✓ 45 Sek. sauber mit Reserve erreicht – nächstes Mal Gewicht leicht erhöhen und wieder bei 30–35 Sek. starten.';return}
+      box.className='reco';box.textContent='✓ Belastung passt. Gewicht halten; nächstes Mal höchstens +5 Sek. Gesamtzeit bei stabiler Haltung und ≥5 Sek. Reserve.';return;
+    }
     const rr=rirRange(p);
     if(rows.some(r=>r.rir!=null&&r.rir<rr.min)){
       box.className='reco warn';box.textContent=`RIR-Ziel unterschritten. Nächstes Mal keine Reps erzwingen: bei ${rirLabel(p)} stoppen und Last zunächst halten.`;return;
@@ -118,7 +178,7 @@
     }
     if(rows.every(r=>r.reps>=p.max&&(r.rir==null||r.rir>=rr.min))){
       box.className='reco good';
-      box.textContent=p.mode==='assist'?'✓ Obergrenze sauber erreicht – nächstes Mal Unterstützung leicht reduzieren.':p.mode==='time'?'✓ Obergrenze sauber erreicht – nächstes Mal Gewicht leicht erhöhen.':'✓ Obergrenze sauber erreicht – nächstes Mal den kleinsten sinnvollen Gewichtsschritt erhöhen.';
+      box.textContent=p.mode==='assist'?'✓ Obergrenze sauber erreicht – nächstes Mal Unterstützung leicht reduzieren.':'✓ Obergrenze sauber erreicht – nächstes Mal den kleinsten sinnvollen Gewichtsschritt erhöhen.';
       return;
     }
     box.className='reco';box.textContent=`✓ Belastung passt. Gewicht halten; nächstes Mal höchstens +1 saubere Gesamt-Wdh., solange ${rirLabel(p)} erhalten bleiben.`;
