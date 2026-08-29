@@ -1,4 +1,4 @@
-const CACHE="training-tracker-v2.8.1";
+const CACHE="training-tracker-v2.8.2";
 const ASSETS=["./","./index.html","./app.css?v=2.3.2","./plan.js?v=2.3.2","./app.js?v=2.3.2","./recommendation.js?v=2.3.2","./storage.js?v=2.3.2","./manifest.webmanifest","./icon.svg"];
 
 self.addEventListener("install",e=>{
