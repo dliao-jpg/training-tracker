@@ -18,12 +18,12 @@ const PLAN={
   {id:"pallof",name:"Pallof Press",sets:2,min:10,max:12,unit:"Wdh./Seite",mode:"load",rest:60,note:"2–3 RIR"}
  ]},
  full:{title:"Einheit 4 – Full Body + Power",subtitle:"Ganzkörper & funktionelle Kraft",type:"strength",warmup:"Wall Angels ×10 + Inchworm Walkouts ×2 + World's Greatest Stretch ×10 + Leg Swings vor/zurück ×10 je Bein + Leg Swings seitlich ×10 je Bein + Squat ×6 + Scapular Push-up ×8 + leichter Row ×8.",exercises:[
-  {id:"speed_squat",name:"Speed Smith Squat",sets:3,min:5,max:5,unit:"Wdh.",mode:"speed",rest:75,note:"leicht • explosiv hoch"},
+  {id:"speed_squat",name:"Speed Smith Squat",sets:3,min:5,max:5,unit:"Wdh.",mode:"speed",rest:90,note:"leicht • explosiv hoch • bei deutlichem Speed-Verlust stoppen"},
   {id:"pushup",name:"Push-up / Weighted Push-up",sets:3,min:8,max:15,unit:"Wdh.",mode:"load",rest:90,note:"1–2 RIR"},
   {id:"chinup",name:"Assisted Pull-up / Chin-up",sets:3,min:6,max:10,unit:"Wdh.",mode:"assist",rest:120,note:"1–2 RIR"},
   {id:"reverse_lunge",name:"Reverse Lunge / Step-up",sets:2,min:8,max:10,unit:"Wdh./Seite",mode:"load",rest:90,note:"2 RIR"},
   {id:"hyperextension",name:"45° Hyperextension",sets:2,min:10,max:15,unit:"Wdh.",mode:"load",rest:90,note:"2–3 RIR"},
-  {id:"farmer",name:"Farmer Carry",sets:3,min:30,max:45,unit:"Sek.",mode:"time",rest:75,note:"stabile Haltung"},
+  {id:"farmer",name:"Farmer Carry",sets:3,min:30,max:45,unit:"Sek.",mode:"time",rest:75,note:"stabile Haltung • Reserve in Sek."},
   {id:"face_pull",name:"Face Pull",sets:2,min:15,max:20,unit:"Wdh.",mode:"load",rest:60,note:"1–2 RIR"}
  ]},
  cardioSat:{title:"Einheit 5 – Cardio",subtitle:"Zone 2 oder gelegentlich 4×4",type:"cardio",defaults:{mode:"Zone 2",duration:50,rpe:4}}
