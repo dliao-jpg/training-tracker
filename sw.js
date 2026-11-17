@@ -1,5 +1,5 @@
-const CACHE="training-tracker-v2.8.2";
-const ASSETS=["./","./index.html","./app.css?v=2.3.2","./plan.js?v=2.3.2","./app.js?v=2.3.2","./recommendation.js?v=2.3.2","./storage.js?v=2.3.2","./manifest.webmanifest","./icon.svg"];
+const CACHE="training-tracker-v2.9.0";
+const ASSETS=["./","./index.html","./app.css?v=2.4.0","./plan.js?v=2.4.0","./app.js?v=2.4.0","./recommendation.js?v=2.4.0","./storage.js?v=2.4.0","./manifest.webmanifest","./icon.svg"];
 
 self.addEventListener("install",e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
