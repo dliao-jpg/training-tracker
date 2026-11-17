@@ -6,7 +6,7 @@ function iso(d=new Date()){const o=d.getTimezoneOffset();return new Date(d-o*600
 function fmt(s){return new Intl.DateTimeFormat("de-DE",{day:"2-digit",month:"2-digit",year:"2-digit"}).format(new Date(s+"T12:00:00"))}
 function sow(d=new Date()){let x=new Date(d),k=(x.getDay()+6)%7;x.setHours(0,0,0,0);x.setDate(x.getDate()-k);return x}
 function inWeek(s){const d=new Date(s+"T12:00:00"),a=sow(),b=new Date(a);b.setDate(b.getDate()+7);return d>=a&&d<b}
-function allEx(){let m=new Map();Object.values(PLAN).filter(p=>p.type==="strength").forEach(p=>p.exercises.forEach(e=>m.set(e.id,e)));return [...m.values()]}
+function allEx(){let m=new Map();(typeof LEGACY_EXERCISES!=="undefined"?LEGACY_EXERCISES:[]).forEach(e=>m.set(e.id,e));Object.values(PLAN).filter(p=>p.type==="strength").forEach(p=>p.exercises.forEach(e=>m.set(e.id,e)));return [...m.values()]}
 
 function render(){
  const wk=data.sessions.filter(s=>inWeek(s.date));
