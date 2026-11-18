@@ -1,4 +1,4 @@
-// Training Tracker V2.4.1 – China 10-week block
+// Training Tracker V2.4.2 – China 10-week block
 // Legacy names are retained so historical sessions keep readable labels in Progress/CSV.
 const LEGACY_EXERCISES=[
  {id:"incline_press",name:"Incline Dumbbell / Smith Press"},
@@ -20,13 +20,14 @@ const LEGACY_EXERCISES=[
  {id:"reverse_lunge",name:"Reverse Lunge / Step-up"},
  {id:"hyperextension",name:"45° Hyperextension"},
  {id:"farmer",name:"Farmer Carry"},
- {id:"face_pull",name:"Face Pull"}
+ {id:"face_pull",name:"Face Pull"},
+ {id:"china_lat_pull",name:"Lat Pulldown – China-Maschine"}
 ];
 
 const PLAN={
  upper:{title:"Einheit 1 – Upper Body",subtitle:"China Block • Hypertrophie & Haltung",type:"strength",warmup:"Wall Angels ×10 + Inchworm Walkouts ×2 + World's Greatest Stretch ×10 + Band Pull Apart ×15 + leichter einarmiger Cable Row ×10/Seite + 1–2 Aufwärmsätze Press.",exercises:[
   {id:"incline_press",name:"Incline Dumbbell Press",sets:3,min:8,max:12,unit:"Wdh.",mode:"load",rest:120,note:"1–2 RIR"},
-  {id:"china_lat_pull",name:"Lat Pulldown",sets:3,min:8,max:12,unit:"Wdh.",mode:"load",rest:120,note:"1–2 RIR • China-Maschine"},
+  {id:"china_seated_underhand_lat",name:"Seated Underhand Cable Lat Pulldown",sets:3,min:8,max:12,unit:"Wdh.",mode:"load",rest:120,note:"1–2 RIR • beidhändig • Unterhandgriff • volle kontrollierte ROM"},
   {id:"china_one_arm_row",name:"One-Arm Cable Row",sets:3,min:8,max:12,unit:"Wdh./Seite",mode:"load",rest:90,note:"1–2 RIR • schwächere Seite zuerst"},
   {id:"china_cable_fly",name:"Cable Fly",sets:2,min:12,max:15,unit:"Wdh.",mode:"load",rest:75,note:"1–2 RIR"},
   {id:"china_lateral_raise",name:"Cable / DB Lateral Raise",sets:3,min:12,max:20,unit:"Wdh.",mode:"load",rest:60,note:"1–2 RIR"},
