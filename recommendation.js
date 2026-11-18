@@ -1,4 +1,4 @@
-// Training Tracker V2.4.1 – RIR-first recommendation layer + timed carry reserve
+// Training Tracker V2.4.2 – RIR-first recommendation layer + timed carry reserve
 (function(){
   const css=`
   .todayReco{margin-top:10px;border-radius:12px;padding:11px 12px;background:#18202b;border:1px solid #314158}
