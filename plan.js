@@ -1,4 +1,4 @@
-// Training Tracker V2.4.0 – China 10-week block
+// Training Tracker V2.4.1 – China 10-week block
 // Legacy names are retained so historical sessions keep readable labels in Progress/CSV.
 const LEGACY_EXERCISES=[
  {id:"incline_press",name:"Incline Dumbbell / Smith Press"},
@@ -46,7 +46,7 @@ const PLAN={
  full:{title:"Einheit 4 – Full Body + Power",subtitle:"China Block • Ganzkörper & funktionelle Kraft",type:"strength",warmup:"Wall Angels ×10 + Inchworm Walkouts ×2 + World's Greatest Stretch ×10 + Leg Swings vor/zurück ×10 je Bein + Leg Swings seitlich ×10 je Bein + Squat ×6 + Scapular Push-up ×8 + leichter Cable Row ×8.",exercises:[
   {id:"china_speed_squat",name:"Speed Smith Squat",sets:3,min:5,max:5,unit:"Wdh.",mode:"speed",rest:90,note:"leicht • explosiv hoch • bei deutlichem Speed-Verlust stoppen"},
   {id:"pushup",name:"Push-up / Weighted Push-up",sets:3,min:8,max:15,unit:"Wdh.",mode:"load",rest:90,note:"1–2 RIR"},
-  {id:"china_lat_pull_full",name:"Lat Pulldown – alternative Griffvariante",sets:3,min:8,max:12,unit:"Wdh.",mode:"load",rest:120,note:"1–2 RIR • andere Griffvariante als Upper"},
+  {id:"china_one_arm_lat_pull_full",name:"One-Arm Cable Lat Pulldown",sets:3,min:8,max:12,unit:"Wdh./Seite",mode:"load",rest:90,note:"1–2 RIR • hoher Kabelzug schräg zur Hüfte • schwächere Seite zuerst"},
   {id:"reverse_lunge",name:"Reverse Lunge",sets:2,min:8,max:10,unit:"Wdh./Seite",mode:"load",rest:90,note:"2 RIR • schwächere Seite zuerst"},
   {id:"china_db_rdl",name:"Dumbbell Romanian Deadlift",sets:2,min:8,max:12,unit:"Wdh.",mode:"load",rest:90,note:"2–3 RIR • Hanteln dicht am Körper • kontrollierte ROM"},
   {id:"farmer",name:"Farmer Carry",sets:3,min:30,max:45,unit:"Sek.",mode:"time",rest:75,note:"stabile Haltung • Reserve in Sek."},
